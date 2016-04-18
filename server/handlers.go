@@ -28,11 +28,6 @@ func RandStringRunes(n int) string {
 	return string(b)
 }
 
-// Index ..
-func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Categorizer!")
-}
-
 // Method ...
 func Method(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Request incoming...")
@@ -65,27 +60,5 @@ func Method(w http.ResponseWriter, r *http.Request) {
 	JobQueue <- job
 	fmt.Println("Enqueue job")
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
-}
-
-// PayloadHandler ...
-func PayloadHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("running payload")
-	if r.Method != "POST" {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		return
-	}
-
-	body, err := ioutil.ReadAll(io.LimitReader(r.Body, maxLength))
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	name := RandStringRunes(5)
-	// let's create a job with the payload
-	job := Job{Name: name, Payload: body}
-	JobQueue <- job
 	w.WriteHeader(http.StatusOK)
 }

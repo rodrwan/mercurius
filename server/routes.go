@@ -15,21 +15,9 @@ type Routes []Route
 
 var routes = Routes{
 	Route{
-		"Index",
-		"GET",
-		"/",
-		Index,
-	},
-	Route{
 		"Method",
 		"POST",
 		"/scraping/{type}",
 		Method,
-	},
-	Route{
-		"PayloadHandler",
-		"POST",
-		"/payload",
-		PayloadHandler,
 	},
 }
