@@ -64,9 +64,8 @@ func Method(w http.ResponseWriter, r *http.Request) {
 	job := Job{Name: name, Payload: body, EndPoint: taskType}
 	JobQueue <- job
 	fmt.Println("Enqueue job")
-	// w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
-	// w.Write(stream)
 }
 
 // PayloadHandler ...

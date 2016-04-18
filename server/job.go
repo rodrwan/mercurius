@@ -31,10 +31,9 @@ func (j *Job) CategoryCall() ([]byte, string) {
 func APICall(body []byte, endpoint string) string {
 	fmt.Println("Sending data to API")
 	apiURL := os.Getenv("API_URL") + endpoint
-	// apiBearer := fmt.Sprintf("Token token=%s", os.Getenv("API_BEARER"))
-	return apiURL
-	// resp := httpClient(apiURL, apiBearer, body)
-	// return string(resp)
+	apiBearer := fmt.Sprintf("Token token=%s", os.Getenv("API_BEARER"))
+	resp := httpClient(apiURL, apiBearer, body)
+	return string(resp)
 }
 
 func httpClient(URL string, bearer string, body []byte) []byte {
