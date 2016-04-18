@@ -24,6 +24,7 @@ func (j *Job) CategoryCall() ([]byte, string) {
 	fmt.Printf("URL: %s\n", categoryURL)
 	fmt.Printf("BEARER: %s\n", categoryBearer)
 	resp := httpClient(categoryURL, categoryBearer, body)
+
 	return resp, j.EndPoint
 }
 
@@ -33,18 +34,25 @@ func APICall(body []byte, endpoint string) string {
 	apiURL := os.Getenv("API_URL") + endpoint
 	apiBearer := fmt.Sprintf("Token token=%s", os.Getenv("API_BEARER"))
 	resp := httpClient(apiURL, apiBearer, body)
+	if resp == nil {
+		return "Service unavailable"
+	}
 	return string(resp)
 }
 
 func httpClient(URL string, bearer string, body []byte) []byte {
 	client := &http.Client{}
 	req, _ := http.NewRequest("POST", URL, bytes.NewReader(body))
+
 	req.Header.Add("Authorization", bearer)
 	req.Header.Add("Content-Type", "application/json")
-	resp, _ := client.Do(req)
-	fmt.Println(resp.Status)
-	defer resp.Body.Close()
-	return streamToByte(resp.Body)
+	if resp, err := client.Do(req); err == nil {
+		fmt.Println(resp.Status)
+		defer resp.Body.Close()
+		return streamToByte(resp.Body)
+	}
+
+	return nil
 }
 
 func streamToByte(stream io.Reader) []byte {
