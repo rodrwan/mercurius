@@ -7,6 +7,8 @@ import (
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 var maxLength int64 = 1048576
@@ -39,6 +41,7 @@ func Method(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// Scraping response
+	vars := mux.Vars(r)
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, maxLength))
 	if err != nil {
 		panic(err)
@@ -46,10 +49,19 @@ func Method(w http.ResponseWriter, r *http.Request) {
 	if err := r.Body.Close(); err != nil {
 		panic(err)
 	}
+	taskType := vars["type"]
+
+	if taskType != "transactions" {
+		resp := APICall(body, taskType)
+		fmt.Println(resp)
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
 	name := RandStringRunes(5)
 	fmt.Printf("Job %s created\n", name)
 	// Create Job and push the work onto the jobQueue.
-	job := Job{Name: name, Payload: body}
+	job := Job{Name: name, Payload: body, EndPoint: taskType}
 	JobQueue <- job
 	fmt.Println("Enqueue job")
 	// w.Header().Set("Content-Type", "application/json; charset=UTF-8")

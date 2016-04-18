@@ -23,8 +23,8 @@ func (w Worker) Start() {
 				// Here we can put an asyncronous function
 				fmt.Printf("\nWorker %d: started %s\n", w.id, job.Name)
 				// Here we need to send this reponse to API
-				body := job.CategoryCall()
-				APICall(body)
+				body, endpoint := job.CategoryCall()
+				fmt.Println(APICall(body, endpoint))
 				fmt.Printf("worker%d: completed %s!\n", w.id, job.Name)
 			case <-w.quitChan:
 				// We have been asked to stop.

@@ -10,29 +10,31 @@ import (
 
 // Job holds the attributes needed to perform unit of work.
 type Job struct {
-	Name    string
-	Payload []byte
+	Name     string
+	Payload  []byte
+	EndPoint string
 }
 
 // CategoryCall ...
-func (j *Job) CategoryCall() []byte {
-	fmt.Println("Running task")
+func (j *Job) CategoryCall() ([]byte, string) {
+	fmt.Println("Sending data to categorizer")
 	body := j.Payload
 	categoryURL := os.Getenv("CATEGORY_SERVICE_URL")
 	categoryBearer := fmt.Sprintf("Token token=%s", os.Getenv("CATEGORY_BEARER"))
 	fmt.Printf("URL: %s\n", categoryURL)
 	fmt.Printf("BEARER: %s\n", categoryBearer)
 	resp := httpClient(categoryURL, categoryBearer, body)
-	return resp
+	return resp, j.EndPoint
 }
 
 // APICall ...
-func APICall(body []byte) string {
-	fmt.Println("Running task")
-	apiURL := os.Getenv("API_URL")
-	apiBearer := fmt.Sprintf("Token token=%s", os.Getenv("API_BEARER"))
-	resp := httpClient(apiURL, apiBearer, body)
-	return string(resp)
+func APICall(body []byte, endpoint string) string {
+	fmt.Println("Sending data to API")
+	apiURL := os.Getenv("API_URL") + endpoint
+	// apiBearer := fmt.Sprintf("Token token=%s", os.Getenv("API_BEARER"))
+	return apiURL
+	// resp := httpClient(apiURL, apiBearer, body)
+	// return string(resp)
 }
 
 func httpClient(URL string, bearer string, body []byte) []byte {

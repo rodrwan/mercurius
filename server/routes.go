@@ -23,7 +23,7 @@ var routes = Routes{
 	Route{
 		"Method",
 		"POST",
-		"/test",
+		"/scraping/{type}",
 		Method,
 	},
 	Route{
